@@ -13,8 +13,7 @@ The review describes the supplied export, not real production state or a live qu
 - `scripts/analyze.mjs`: reproducible groups and report IDs using the exported cause logic.
 
 Original exported files have been preserved. The export's README describes its conventions.
-The new page's signature is `Lucas Neuhaus / MEGA S01E03 / 2026-10-28`.
-`RenderStamp` computes desk reference `DR-D94G-BHT3` from that signature.
+The new page carries the course-issued signature in its frontmatter. RenderStamp derives its desk reference; neither value is typed into the rendered HTML.
 
 ## Reproduce
 
