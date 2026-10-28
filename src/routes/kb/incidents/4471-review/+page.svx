@@ -25,6 +25,19 @@ Keep the parser and form-hint problems separate. Do not merge by subject or by i
 
 <ReviewEvidence />
 
+## Engineering outcome · 5 October
+
+The [course desk update](https://hq.mega.dev/challenges/what-it-shows#engineering-update),
+published after our first submission, says #4471 closed on 5 October:
+
+- **Parser: fixed** — `fix(dates): parse dd/mm for eu locales`.
+- **Hint: won't fix** — booking-v3 form retired.
+
+Our [parser issue](https://github.com/lucas-neuhauss/mega-s01e03-what-it-shows/issues/1)
+closes as completed. Our [hint issue](https://github.com/lucas-neuhauss/mega-s01e03-what-it-shows/issues/2)
+closes as not planned: retirement is a different outcome from repairing the hint.
+These outcomes come from the later engineering update; the tables below describe the earlier export.
+
 ## Two different failures
 
 ### Parser reads month first for day-first tenants
@@ -32,14 +45,14 @@ Keep the parser and form-hint problems separate. Do not merge by subject or by i
 The shared parser reads month first. For tenants whose locale is day first, app and email
 reports, and reports through the older booking form, classify as `parser`.
 For example, R-41200 describes 7 April becoming 4 July at Harbour Dental.
-The export establishes the classification; it does not show a deployed fix.
+The export establishes the classification; the later engineering update above supplies the fixed status.
 
 ### Booking form shows a hint that disagrees with its reader
 
 The newer booking form prints `MM/DD/YYYY`, but reads the input in the tenant's format.
 For a day-first tenant this classifies as `hint`, a separate failure.
 R-41230 is a form report from Copper Studio: 6 January becomes 1 June.
-Correct the hint and input interpretation together; a shared-parser fix alone does not establish that this path is fixed.
+A shared-parser fix alone would not fix the hint path. Engineering retired booking-v3 instead of repairing it.
 
 ## How the counts are derived
 
@@ -78,6 +91,7 @@ An unknown tenant yields no cause; it is not sufficient evidence for a duplicate
 ## Next action for the desk
 
 Track each confirmed cause in its own issue, carrying the distinct-report count and evidence.
+Record the engineering outcome separately: fixed versus retired, with the corresponding closure reason.
 Keep unresolved symptom descriptions attached to their source reports for investigation.
 Recompute the views after a new export; do not copy these snapshot counts into a claim about today's queue.
 
