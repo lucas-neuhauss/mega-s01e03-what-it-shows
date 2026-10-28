@@ -1,0 +1,84 @@
+---
+layout: runbook
+title: '#4471 review · separate date causes before merging'
+owner: Lucas Neuhaus
+status: reviewed
+reviewed: 2026-10-28
+signature: Lucas Neuhaus / MEGA S01E03 / 2026-10-28
+---
+
+<script>
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import QueueTimeline from '#lib/kb/QueueTimeline.svelte';
+  import DedupeExplorer from '#lib/kb/DedupeExplorer.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import ReviewEvidence from '#lib/kb/ReviewEvidence.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+## What the export establishes
+
+<Callout kind="warn">
+The original “known, one issue, one fix” statement does not describe every report merged into this ticket.
+Keep the parser and form-hint problems separate. Do not merge by subject or by intake tag alone.
+</Callout>
+
+<ReviewEvidence />
+
+## Two different failures
+
+### Parser reads month first for day-first tenants
+
+The shared parser reads month first. For tenants whose locale is day first, app and email
+reports, and reports through the older booking form, classify as `parser`.
+For example, R-41200 describes 7 April becoming 4 July at Harbour Dental.
+The export establishes the classification; it does not show a deployed fix.
+
+### Booking form shows a hint that disagrees with its reader
+
+The newer booking form prints `MM/DD/YYYY`, but reads the input in the tenant's format.
+For a day-first tenant this classifies as `hint`, a separate failure.
+R-41230 is a form report from Copper Studio: 6 January becomes 1 June.
+Correct the hint and input interpretation together; a shared-parser fix alone does not establish that this path is fixed.
+
+## How the counts are derived
+
+Deduplicate `reports-4471.json` by report ID, then select `mergedInto === 4471`.
+Resolve each report's tenant through `locales.ts` and the tenant directory.
+Use `causeOf` and `groupByCause` from `causes.ts`; those functions use the tenant locale,
+report channel, and booking-form version. Browser locale and `meta.intakeTag` are intake guesses.
+The table exposes where those tags disagree with the computed cause.
+
+<CauseTable ticket={4471} />
+
+The five desk-noted one-day moves are footnoted within their computed group.
+Keep the report bodies for follow-up rather than inventing another confirmed cause.
+
+## Reports arriving versus the desk merging them
+
+<QueueTimeline ticket={4471} />
+
+These timestamps describe different events. A bulk merge does not show a sudden increase in failures.
+This page describes the supplied export, not a live queue or current production status.
+
+## Replace subject-only triage
+
+Read [decision 0001](/kb/decisions/0001-dedupe-by-subject),
+[the triage rule](/kb/triage/dedupe), and [the original incident page](/kb/incidents/4471)
+alongside their rendered components. The old decision and triage page retain their historical wording;
+their review dates trigger the layout's staleness warning. An accepted decision should be superseded
+by a new decision, not silently rewritten.
+
+Subjects can match across different causes, and different subjects can describe the same cause.
+Check tenant configuration and the report's channel before merging.
+An unknown tenant yields no cause; it is not sufficient evidence for a duplicate.
+
+<DedupeExplorer />
+
+## Next action for the desk
+
+Track each confirmed cause in its own issue, carrying the distinct-report count and evidence.
+Keep unresolved symptom descriptions attached to their source reports for investigation.
+Recompute the views after a new export; do not copy these snapshot counts into a claim about today's queue.
+
+<RenderStamp {signature} />
